@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style id='brand'>:root{
+  --bg:#0b0b0c; --surface:#141417; --surface-2:#1c1c21;
+  --fg:#f5f5f7; --fg-muted:#a1a1aa; --border:#26262b;
+  --accent:#3b82f6; --accent-fg:#fff; --radius:14px; --maxw:1100px;
+  --font:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.section{padding:96px 0}
+.hero{padding:140px 0 90px;text-align:center}
+h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.05;letter-spacing:-.02em}
+h2{font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.01em}
+.muted{color:var(--fg-muted)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-fg);padding:14px 28px;border-radius:var(--radius);font-weight:600;text-decoration:none;border:0;cursor:pointer;transition:transform .15s ease,opacity .15s ease}
+.btn:hover{transform:translateY(-2px);opacity:.92}
+.btn-ghost{background:transparent;color:var(--fg);border:1px solid var(--border)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.grid{display:grid;gap:24px}
+@media(max-width:640px){.section{padding:64px 0}.hero{padding:96px 0 64px}}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatterbox — Turn website visitors into conversations</title>
+<style>
+  :root{
+    --accent: #ff6b4a;
+    --accent-2: #6b5bff;
+    --bubble-in: #f0f1f5;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    overflow-x: hidden;
+  }
+
+  /* ---------- NAV ---------- */
+  .cb-nav{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .cb-nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 16px 0;
+  }
+  .cb-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    font-size: 1.15rem;
+    letter-spacing:-0.02em;
+  }
+  .cb-logo-dot{
+    width:34px;height:34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    flex-shrink:0;
+  }
+  .cb-logo-dot::after{
+    content:"";
+    position:absolute;
+    bottom:-4px; left:9px;
+    width:0;height:0;
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    border-top:6px solid var(--accent-2);
+  }
+  .cb-logo-dot span{
+    display:flex;gap:3px;
+  }
+  .cb-logo-dot i{
+    width:4px;height:4px;background:#fff;border-radius:50%;
+    display:inline-block;
+    animation: blink 1.4s infinite ease-in-out;
+  }
+  .cb-logo-dot i:nth-child(2){ animation-delay: .2s; }
+  .cb-logo-dot i:nth-child(3){ animation-delay: .4s; }
+  @keyframes blink{
+    0%, 60%, 100% { opacity: .35; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-2px); }
+  }
+  .cb-navlinks{
+    display:flex;
+    gap: 28px;
+    align-items:center;
+  }
+  .cb-navlinks a{
+    color: var(--fg-muted);
+    text-decoration:none;
+    font-size: 0.92rem;
+    font-weight:500;
+    transition: color .2s ease;
+  }
+  .cb-navlinks a:hover{ color: var(--fg); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding-top: 80px;
+    padding-bottom: 40px;
+    position: relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items:center;
+  }
+  .cb-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight:700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .cb-eyebrow .pulse{
+    width:7px;height:7px;border-radius:50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+    70%{ box-shadow: 0 0 0 8px transparent; }
+    100%{ box-shadow: 0 0 0 0 transparent; }
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 4.6vw, 3.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    margin: 0 0 22px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background: linear-gradient(100deg, var(--accent), var(--accent-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color: transparent;
+  }
+  .hero p.lead{
+    font-size: 1.15rem;
+    color: var(--fg-muted);
+    max-width: 520px;
+    margin-bottom: 34px;
+    line-height:1.6;
+  }
+  .hero-ctas{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .cb-microtrust{
+    margin-top: 28px;
+    display:flex;
+    gap: 22px;
+    flex-wrap:wrap;
+    font-size: 0.85rem;
+    color: var(--fg-muted);
+  }
+  .cb-microtrust span{ display:flex; align-items:center; gap:6px; }
+  .cb-microtrust b{ color: var(--fg); font-weight:700; }
+
+  /* ---------- CHAT MOCK ---------- */
+  .chat-mock{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 6px);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.25);
+    overflow:hidden;
+    transform: rotate(1deg);
+    transition: transform .4s ease;
+  }
+  .chat-mock:hover{ transform: rotate(0deg) translateY(-4px); }
+  .chat-head{
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    padding: 16px 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#fff;
+  }
+  .chat-head .avatar{
+    width:32px;height:32px;border-radius:50%;
+    background: rgba(255,255,255,0.25);
+    display:flex;align-items:center;justify-content:center;
+    font-size: 15px;
+  }
+  .chat-head .meta b{ display:block; font-size:0.92rem; }
+  .chat-head .meta small{ opacity:0.85; font-size:0.75rem; }
+  .chat-body{
+    padding: 18px;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 300px;
+    background: repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--fg) 2%, transparent),
+      color-mix(in srgb, var(--fg) 2%, transparent) 1px,
+      transparent 1px,
+      transparent 14px
+    );
+  }
+  .bubble{
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 0.88rem;
+    line-height:1.45;
+    opacity: 0;
+    animation: rise .5s ease forwards;
+  }
+  .bubble.in{
+    background: var(--bubble-in);
+    color: #222;
+    align-self:flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .bubble.out{
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color:#fff;
+    align-self:flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .bubble:nth-child(1){ animation-delay: .1s; }
+  .bubble:nth-child(2){ animation-delay: .5s; }
+  .bubble:nth-child(3){ animation-delay: 1s; }
+  .bubble:nth-child(4){ animation-delay: 1.6s; }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  .typing{
+    align-self:flex-start;
+    background: var(--bubble-in);
+    padding: 12px 16px;
+    border-radius: 16px;
+    border-bottom-left-radius:4px;
+    display:flex;
+    gap:4px;
+    opacity: 0;
+    animation: rise .4s ease forwards;
+    animation-delay: 2.2s;
+  }
+  .typing i{
+    width:6px;height:6px;border-radius:50%;
+    background:#999;
+    animation: blink 1.2s infinite;
+  }
+  .typing i:nth-child(2){ animation-delay:.2s; }
+  .typing i:nth-child(3){ animation-delay:.4s; }
+  .chat-foot{
+    padding: 12px 16px;
+    border-top:1px solid var(--border);
+    display:flex;
+    gap:10px;
+  }
+  .chat-foot .fake-input{
+    flex:1;
+    background: var(--bg);
+    border:1px solid var(--border);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size:0.82rem;
+    color: var(--fg-muted);
+  }
+  .chat-foot .send{
+    width:36px;height:36px;border-radius:50%;
+    background: var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+
+  /* ---------- LOGO STRIP ---------- */
+  .logo-strip{
+    padding: 30px 0;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+  }
+  .logo-strip .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap: 24px;
+  }
+  .logo-strip span{
+    font-weight:700;
+    font-size: 1rem;
+    color: var(--fg-muted);
+    opacity: 0.55;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- FEATURES ---------- */
+  .section-head{
+    text-align:center;
+    max-width: 640px;
+    margin: 0 auto 52px;
+  }
+  .section-head h2{
+    font-size: clamp(1.9rem, 3vw, 2.5rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .feat-card{
+    padding: 30px 26px;
+    position:relative;
+    overflow:hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .feat-card:hover{
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    box-shadow: 0 20px 40px -24px rgba(0,0,0,0.3);
+  }
+  .feat-icon{
+    width:46px;height:46px;
+    border-radius: 12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  }
+  .feat-card h3{
+    font-size: 1.08rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .feat-card p{
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+    line-height:1.55;
+    margin:0;
+  }
+
+  /* ---------- STATS BAND ---------- */
+  .stats-band{
+    background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), color-mix(in srgb, var(--accent-2) 8%, var(--surface)));
+    border-radius: calc(var(--radius) + 8px);
+    padding: 44px 30px;
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    text-align:center;
+  }
+  .stats-band .num{
+    font-size: 2.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(100deg, var(--accent), var(--accent-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .stats-band .lbl{
+    font-size: 0.82rem;
+    color: var(--fg-muted);
+    margin-top: 4px;
+  }
+
+  /* ---------- PRICING ---------- */
+  .pricing-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    align-items:stretch;
+  }
+  .price-card{
+    padding: 32px 28px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .price-card.pop{
+    border-color: var(--accent);
+    box-shadow: 0 25px 50px -25px color-mix(in srgb, var(--accent) 50%, transparent);
+    transform: scale(1.03);
+  }
+  .price-card .badge{
+    position:absolute;
+    top: -12px; right: 24px;
+    background: var(--accent);
+    color:#fff;
+    font-size: 0.72rem;
+    font-weight:700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    letter-spacing:0.02em;
+  }
+  .price-card h3{
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+  .price-card .price{
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing:-0.03em;
+    margin: 10px 0 4px;
+  }
+  .price-card .price small{
+    font-size: 0.95rem;
+    font-weight:500;
+    color: var(--fg-muted);
+  }
+  .price-card ul{
+    list-style:none;
+    padding:0;
+    margin: 20px 0 26px;
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+  }
+  .price-card ul li{
+    font-size: 0.88rem;
+    color: var(--fg-muted);
+    display:flex;
+    gap: 8px;
+    align-items:flex-start;
+  }
+  .price-card ul li::before{
+    content: "✓";
+    color: var(--accent);
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .price-card .btn{ margin-top:auto; text-align:center; }
+
+  /* ---------- CTA BAND ---------- */
+  .cta-band{
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    border-radius: calc(var(--radius) + 8px);
+    padding: 56px 40px;
+    text-align:center;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-band::before, .cta-band::after{
+    content:"";
+    position:absolute;
+    width: 260px; height:260px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .cta-band::before{ top:-100px; left:-80px; }
+  .cta-band::after{ bottom:-120px; right:-60px; }
+  .cta-band h2{
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    margin-bottom: 12px;
+    letter-spacing:-0.02em;
+    position:relative;
+  }
+  .cta-band p{
+    opacity:0.92;
+    margin-bottom: 26px;
+    position:relative;
+  }
+  .cta-band .btn{
+    position:relative;
+    background:#fff;
+    color: #222;
+    border:none;
+  }
+  .cta-band .btn:hover{ opacity:0.9; }
+
+  /* ---------- FOOTER ---------- */
+  footer.cb-footer{
+    border-top: 1px solid var(--border);
+    padding: 50px 0 30px;
+  }
+  .footer-grid{
+    display:grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  .footer-grid h4{
+    font-size: 0.82rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color: var(--fg-muted);
+    margin-bottom: 14px;
+  }
+  .footer-grid a{
+    display:block;
+    color: var(--fg-muted);
+    text-decoration:none;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    transition: color .2s ease;
+  }
+  .footer-grid a:hover{ color: var(--accent); }
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    flex-wrap:wrap;
+    gap: 12px;
+  }
+
+  /* ---------- reveal-on-scroll (visible by default) ---------- */
+  .reveal{
+    animation: none;
+  }
+  .reveal.in-view{
+    animation: fadeUp .6s ease both;
+  }
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(16px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .pricing-grid{ grid-template-columns: 1fr; }
+    .price-card.pop{ transform:none; }
+    .stats-band{ grid-template-columns: repeat(2,1fr); }
+    .footer-grid{ grid-template-columns: 1fr 1fr; }
+    .cb-navlinks{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="cb-nav">
+  <div class="container cb-nav-inner">
+    <div class="cb-logo">
+      <div class="cb-logo-dot"><span><i></i><i></i><i></i></span></div>
+      Chatterbox
+    </div>
+    <div class="cb-navlinks">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#pricing" class="btn btn-ghost">Get started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="cb-eyebrow"><span class="pulse"></span> Live in under 5 minutes</div>
+      <h1>Turn silent visitors into <em>real conversations.</em></h1>
+      <p class="lead">Chatterbox drops a friendly, fast, always-on chat widget onto your site so no question — and no lead — ever goes unanswered.</p>
+      <div class="hero-ctas">
+        <a href="#pricing" class="btn">Start free trial</a>
+        <a href="#features" class="btn btn-ghost">See how it works →</a>
+      </div>
+      <div class="cb-microtrust">
+        <span>⭐️⭐️⭐️⭐️⭐️ <b>4.9/5</b> from teams like yours</span>
+        <span>💬 <b>2M+</b> chats handled monthly</span>
+        <span>⚡ <b>&lt;1s</b> average reply time</span>
+      </div>
+    </div>
+
+    <div class="chat-mock reveal">
+      <div class="chat-head">
+        <div class="avatar">💬</div>
+        <div class="meta">
+          <b>Chatterbox</b>
+          <small>Usually replies instantly</small>
+        </div>
+      </div>
+      <div class="chat-body">
+        <div class="bubble in">Hi 👋 need help finding the right plan?</div>
+        <div class="bubble out">Yeah, do you support Shopify?</div>
+        <div class="bubble in">Yep! One-click install, live in minutes.</div>
+        <div class="bubble out">Perfect, sold. Where do I sign up?</div>
+        <div class="typing"><i></i><i></i><i></i></div>
+      </div>
+      <div class="chat-foot">
+        <div class="fake-input">Type a message…</div>
+        <div class="send">➤</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="logo-strip">
+  <div class="container row">
+    <span>ORBITSHOP</span>
+    <span>NIMBUS</span>
+    <span>FLOWDESK</span>
+    <span>PIXELWARE</span>
+    <span>HARBORLY</span>
+  </div>
+</div>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Everything a support team wishes it had</h2>
+      <p class="muted">One lightweight widget. Instant answers, human handoff, and insights baked in — no engineering sprint required.</p>
+    </div>
+
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 22px;">
+      <div class="card feat-card reveal">
+        <div class="feat-icon">⚡</div>
+        <h3>Instant setup</h3>
+        <p>Paste one line of code and Chatterbox is live — no dev team, no config files, no waiting.</p>
+      </div>
+      <div class="card feat-card reveal">
+        <div class="feat-icon">🤖</div>
+        <h3>Smart auto-replies</h3>
+        <p>Trained on your docs and past chats, so common questions get answered before a human ever sees them.</p>
+      </div>
+      <div class="card feat-card reveal">
+        <div class="feat-icon">🤝</div>
+        <h3>Seamless handoff</h3>
+        <p>When it's time for a human, your team jumps in mid-conversation with full context — nothing repeated.</p>
+      </div>
+      <div class="card feat-card reveal">
+        <div class="feat-icon">🌍</div>
+        <h3>Speaks every language</h3>
+        <p>Visitors chat in their language, your team replies in theirs. Translation happens invisibly, in real time.</p>
+      </div>
+      <div class="card feat-card reveal">
+        <div class="feat-icon">📊</div>
+        <h3>Conversation insights</h3>
+        <p>See what people actually ask, where they drop off, and which chats turn into revenue.</p>
+      </div>
+      <div class="card feat-card reveal">
+        <div class="feat-icon">🎨</div>
+        <h3>Matches your brand</h3>
+        <p>Colors, avatar, tone of voice — customize it until it feels like a native part of your site.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="stats-band reveal">
+      <div>
+        <div class="num">3.2x</div>
+        <div class="lbl">more leads captured</div>
+      </div>
+      <div>
+        <div class="num">68%</div>
+        <div class="lbl">questions auto-resolved</div>
+      </div>
+      <div>
+        <div class="num">&lt;1s</div>
+        <div class="lbl">avg. first response</div>
+      </div>
+      <div>
+        <div class="num">24/7</div>
+        <div class="lbl">always-on coverage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Simple pricing, no surprises</h2>
+      <p class="muted">Start free. Upgrade when your conversations start converting.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="card price-card reveal">
+        <h3>Starter</h3>
+        <p class="muted" style="font-size:0.85rem;">For small sites getting started</p>
+        <div class="price">$0<small>/mo</small></div>
+        <ul>
+          <li>1 chat widget</li>
+          <li>Up to 100 chats/mo</li>
+          <li>Basic auto-replies</li>
+          <li>Community support</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Start free</a>
+      </div>
+
+      <div class="card price-card pop reveal">
+        <div class="badge">MOST POPULAR</div>
+        <h3>Growth</h3>
+        <p class="muted" style="font-size:0.85rem;">For teams turning chats into customers</p>
+        <div class="price">$49<small>/mo</small></div>
+        <ul>
+          <li>Unlimited chats</li>
+          <li>Smart auto-replies + AI training</li>
+          <li>Human handoff & team inbox</li>
+          <li>Analytics dashboard</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn">Start free trial</a>
+      </div>
+
+      <div class="card price-card reveal">
+        <h3>Scale</h3>
+        <p class="muted" style="font-size:0.85rem;">For high-volume, multi-brand teams</p>
+        <div class="price">$149<small>/mo</small></div>
+        <ul>
+          <li>Everything in Growth</li>
+          <li>Multiple sites & brands</li>
+          <li>Custom integrations & API</li>
+          <li>Dedicated success manager</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Talk to sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="cta-band reveal">
+      <h2>Your visitors are already talking. Are you listening?</h2>
+      <p>Join thousands of sites using Chatterbox to catch every question, every lead, every time.</p>
+      <a href="#pricing" class="btn">Get started free</a>
+    </div>
+  </div>
+</section>
+
+<footer class="cb-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="cb-logo" style="margin-bottom:12px;">
+          <div class="cb-logo-dot"><span><i></i><i></i><i></i></span></div>
+          Chatterbox
+        </div>
+        <p class="muted" style="font-size:0.88rem; max-width:260px;">The chat widget that keeps every conversation moving — even when your team's asleep.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Chatterbox. All rights reserved.</span>
+      <span>Made for people who hate missed messages.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal-on-scroll: elements are already visible by default (CSS),
+  // this just adds a subtle entrance animation when scrolled into view.
+  const els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    els.forEach(el => io.observe(el));
+  }
+
+  // Subtle nav shadow on scroll
+  const nav = document.querySelector('.cb-nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) {
+      nav.style.boxShadow = '0 6px 20px -12px rgba(0,0,0,0.25)';
+    } else {
+      nav.style.boxShadow = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
